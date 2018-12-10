@@ -36,7 +36,6 @@ namespace AI4E.Storage
             var services = builder.Services;
 
             services.AddSingleton<IDatabase, TDatabase>();
-            services.AddSingleton(p => p.GetRequiredService<IDatabase>() as IFilterableDatabase);
             services.AddSingleton(p => p.GetRequiredService<IDatabase>() as IQueryableDatabase);
 
             services.UseTransactionSubsystem();
@@ -56,7 +55,6 @@ namespace AI4E.Storage
             var services = builder.Services;
 
             services.AddSingleton<IDatabase, TDatabase>(factory);
-            services.AddSingleton(p => p.GetRequiredService<IDatabase>() as IFilterableDatabase);
             services.AddSingleton(p => p.GetRequiredService<IDatabase>() as IQueryableDatabase);
 
             services.UseTransactionSubsystem();
@@ -73,7 +71,6 @@ namespace AI4E.Storage
             var services = builder.Services;
 
             services.AddSingleton<IDatabase, TDatabase>();
-            services.AddSingleton(p => p.GetRequiredService<IDatabase>() as IFilterableDatabase);
             services.AddSingleton(p => p.GetRequiredService<IDatabase>() as IQueryableDatabase);
 
             services.AddSingleton<ITransactionalDatabase, TDatabase>(p => p.GetRequiredService<IDatabase>() as TDatabase);
@@ -94,7 +91,6 @@ namespace AI4E.Storage
             var services = builder.Services;
 
             services.AddSingleton<IDatabase, TDatabase>(factory);
-            services.AddSingleton(p => p.GetRequiredService<IDatabase>() as IFilterableDatabase);
             services.AddSingleton(p => p.GetRequiredService<IDatabase>() as IQueryableDatabase);
 
             services.AddSingleton<ITransactionalDatabase, TDatabase>(p => p.GetRequiredService<IDatabase>() as TDatabase);

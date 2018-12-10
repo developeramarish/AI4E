@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -13,9 +13,9 @@ namespace AI4E.Storage.Transactions
 {
     public sealed class TransactionStateStorage : ITransactionStateStorage
     {
-        private readonly IFilterableDatabase _database;
+        private readonly IDatabase _database;
 
-        public TransactionStateStorage(IFilterableDatabase database)
+        public TransactionStateStorage(IDatabase database)
         {
             if (database == null)
                 throw new ArgumentNullException(nameof(database));
@@ -24,8 +24,8 @@ namespace AI4E.Storage.Transactions
         }
 
         public Task<bool> CompareExchangeAsync(ITransactionState transaction,
-                                                    ITransactionState comparand,
-                                                    CancellationToken cancellation = default)
+                                               ITransactionState comparand,
+                                               CancellationToken cancellation = default)
         {
             var data = AsStoredTransaction(transaction);
             var cmpr = AsStoredTransaction(comparand);
