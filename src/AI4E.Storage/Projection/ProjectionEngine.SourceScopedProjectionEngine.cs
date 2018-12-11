@@ -18,7 +18,6 @@ namespace AI4E.Storage.Projection
         {
             private readonly ProjectionSourceDescriptor _sourceDescriptor;
             private readonly IProjector _projector;
-            private readonly ITransactionalDatabase _transactionalDatabase;
             private readonly IDatabase _database;
             private readonly IServiceProvider _serviceProvider;
 
@@ -27,20 +26,17 @@ namespace AI4E.Storage.Projection
 
             public SourceScopedProjectionEngine(in ProjectionSourceDescriptor sourceDescriptor,
                                                 IProjector projector,
-                                                ITransactionalDatabase transactionalDatabase,
                                                 IDatabase database,
                                                 IServiceProvider serviceProvider)
             {
                 Assert(sourceDescriptor != default);
                 Assert(projector != null);
                 Assert(sourceDescriptor != default);
-                Assert(transactionalDatabase != null);
                 Assert(database != null);
                 Assert(serviceProvider != null);
 
                 _sourceDescriptor = sourceDescriptor;
                 _projector = projector;
-                _transactionalDatabase = transactionalDatabase;
                 _database = database;
                 _serviceProvider = serviceProvider;
 
@@ -48,11 +44,10 @@ namespace AI4E.Storage.Projection
                 _targetScopedProjectionEngines = new Dictionary<Type, ITargetScopedProjectionEngine>();
             }
 
-
             // Projects the source entity and returns the descriptors of all dependent source entities. 
             public async Task<IEnumerable<ProjectionSourceDescriptor>> ProjectAsync(CancellationToken cancellation)
             {
-                using (var transactionalDatabase = _transactionalDatabase.CreateScope())
+                using (var transactionalDatabase = _database.CreateScope())
                 {
                     do
                     {

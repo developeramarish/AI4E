@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AI4E.Internal;
+using AI4E.Storage.Transactions;
 using AI4E.Utils;
 using AI4E.Utils.AsyncEnumerable;
 using Nito.AsyncEx;
@@ -202,6 +203,13 @@ namespace AI4E.Storage.InMemory
         {
             return new ValueTask<long>(_resources.GetOrAdd(resourceKey, _ => new Resource()).NextId());
         }
+
+        IScopedTransactionalDatabase IDatabase.CreateScope()
+        {
+            throw new NotSupportedException();
+        }
+
+        bool IDatabase.SupportsScopes => false;
 
         #endregion
     }

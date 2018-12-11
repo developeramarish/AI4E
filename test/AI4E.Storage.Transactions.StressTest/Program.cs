@@ -63,7 +63,7 @@ namespace AI4E.Storage.Transactions.StressTest
 
             for (var i = 0; i < 10; i++)
             {
-                tasks.Add(Task.Run(() => TransferAsync(bankAccountNo1, bankAccountNo2, serviceProvider.GetRequiredService<ITransactionalDatabase>())));
+                tasks.Add(Task.Run(() => TransferAsync(bankAccountNo1, bankAccountNo2, serviceProvider.GetRequiredService<IDatabase>())));
             }
 
             var consoleIn = Task.Run(() => Console.In.ReadLineAsync());
@@ -88,7 +88,7 @@ namespace AI4E.Storage.Transactions.StressTest
 
                 await Console.Out.WriteLineAsync($"Task completed. Throughput: {(count * 1000.0) / watch.ElapsedMilliseconds }ops/sec");
 
-                tasks.Add(Task.Run(() => TransferAsync(bankAccountNo1, bankAccountNo2, serviceProvider.GetRequiredService<ITransactionalDatabase>())));
+                tasks.Add(Task.Run(() => TransferAsync(bankAccountNo1, bankAccountNo2, serviceProvider.GetRequiredService<IDatabase>())));
             }
 
             await Console.Out.WriteLineAsync("Waiting for other ops to complete.");
@@ -129,7 +129,7 @@ namespace AI4E.Storage.Transactions.StressTest
             await Console.Out.WriteLineAsync(bankAccount1.Amount == _ba1AmountComparand && bankAccount2.Amount == _ba2AmountComparand ? "OK" : "NOT OK");
         }
 
-        private static async Task TransferAsync(long bankAccountNo1, long bankAccountNo2, ITransactionalDatabase database)
+        private static async Task TransferAsync(long bankAccountNo1, long bankAccountNo2, IDatabase database)
         {
             var transferAmount = Rnd.Next(2001) - 1000;
 
@@ -208,7 +208,7 @@ namespace AI4E.Storage.Transactions.StressTest
             //services.AddSingleton<ITransactionStateStorage, TransactionStateStorage>();
             //services.AddSingleton<ITransactionManager, TransactionManager>();
             //services.AddSingleton<ITransactionalDatabase, TransactionalDatabase>();
-            services.AddTransient(provider => provider.GetRequiredService<ITransactionalDatabase>().CreateScope());
+            services.AddTransient(provider => provider.GetRequiredService<IDatabase>().CreateScope());
 
             services.AddLogging(builder =>
             {

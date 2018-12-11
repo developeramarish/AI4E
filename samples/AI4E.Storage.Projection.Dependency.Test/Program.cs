@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using AI4E.Domain;
 using AI4E.Domain.Services;
@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace AI4E.Storage.Projection.Dependency.Test
 {
-    class Program
+    internal class Program
     {
         private static IServiceProvider ServiceProvider { get; set; }
 
@@ -81,8 +81,8 @@ namespace AI4E.Storage.Projection.Dependency.Test
         {
             using (var scope = ServiceProvider.CreateScope())
             {
-                var dataStore = scope.ServiceProvider.GetRequiredService<IDataStore>();
-                return await dataStore.FindOneAsync<DependentModel>(p => p.Id == id);
+                var database = scope.ServiceProvider.GetRequiredService<IDatabase>();
+                return await database.GetOneAsync<DependentModel>(p => p.Id == id);
             }
         }
     }

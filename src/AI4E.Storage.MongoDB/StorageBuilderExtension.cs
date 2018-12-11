@@ -36,11 +36,13 @@ namespace AI4E.Storage.MongoDB
             builder.Services.AddSingleton(BuildMongoClient);
             builder.Services.AddSingleton(BuildMongoDatabase);
 
-            if (useNativeTransactions)
-            {
-                builder.UseTransactionalDatabase<MongoDatabase>();
-            }
-            else
+            // TODO
+
+            //if (useNativeTransactions)
+            //{
+            //    builder.UseTransactionalDatabase<MongoDatabase>();
+            //}
+            //else
             {
                 builder.UseDatabase<MongoDatabase>();
             }
@@ -80,7 +82,6 @@ namespace AI4E.Storage.MongoDB
 
             return builder;
         }
-
 
         private static IMongoDatabase BuildMongoDatabase(IServiceProvider serviceProvider)
         {

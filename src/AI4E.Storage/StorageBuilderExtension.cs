@@ -19,8 +19,6 @@
  */
 
 using System;
-using System.Linq;
-using AI4E.Storage.Transactions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AI4E.Storage
@@ -38,7 +36,7 @@ namespace AI4E.Storage
             services.AddSingleton<IDatabase, TDatabase>();
             services.AddSingleton(p => p.GetRequiredService<IDatabase>() as IQueryableDatabase);
 
-            services.UseTransactionSubsystem();
+            // TODO: Insert transaction subsystem if database does not support scopes.
 
             return builder;
         }
@@ -57,59 +55,21 @@ namespace AI4E.Storage
             services.AddSingleton<IDatabase, TDatabase>(factory);
             services.AddSingleton(p => p.GetRequiredService<IDatabase>() as IQueryableDatabase);
 
-            services.UseTransactionSubsystem();
+            // TODO: Insert transaction subsystem if database does not support scopes.
 
             return builder;
         }
 
-        public static IStorageBuilder UseTransactionalDatabase<TDatabase>(this IStorageBuilder builder)
-            where TDatabase : class, IDatabase, ITransactionalDatabase
-        {
-            if (builder == null)
-                throw new ArgumentNullException(nameof(builder));
-
-            var services = builder.Services;
-
-            services.AddSingleton<IDatabase, TDatabase>();
-            services.AddSingleton(p => p.GetRequiredService<IDatabase>() as IQueryableDatabase);
-
-            services.AddSingleton<ITransactionalDatabase, TDatabase>(p => p.GetRequiredService<IDatabase>() as TDatabase);
-            services.AddSingleton(p => p.GetRequiredService<ITransactionalDatabase>() as IQueryableTransactionalDatabase);
-
-            return builder;
-        }
-
-        public static IStorageBuilder UseTransactionalDatabase<TDatabase>(this IStorageBuilder builder, Func<IServiceProvider, TDatabase> factory)
-            where TDatabase : class, IDatabase, ITransactionalDatabase
-        {
-            if (builder == null)
-                throw new ArgumentNullException(nameof(builder));
-
-            if (factory == null)
-                throw new ArgumentNullException(nameof(factory));
-
-            var services = builder.Services;
-
-            services.AddSingleton<IDatabase, TDatabase>(factory);
-            services.AddSingleton(p => p.GetRequiredService<IDatabase>() as IQueryableDatabase);
-
-            services.AddSingleton<ITransactionalDatabase, TDatabase>(p => p.GetRequiredService<IDatabase>() as TDatabase);
-            services.AddSingleton(p => p.GetRequiredService<ITransactionalDatabase>() as IQueryableTransactionalDatabase);
-
-            return builder;
-        }
-
-        private static void UseTransactionSubsystem(this IServiceCollection services)
-        {
-            services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
-            services.AddSingleton<IEntryStateTransformerFactory, EntryStateTransformerFactory>();
-            services.AddSingleton<IEntryStateStorageFactory, EntryStateStorageFactory>();
-            services.AddSingleton<ITransactionStateTransformer, TransactionStateTransformer>();
-            services.AddSingleton<ITransactionStateStorage, TransactionStateStorage>();
-            services.AddSingleton<ITransactionManager, TransactionManager>();
-            services.AddSingleton<ITransactionalDatabase, TransactionalDatabase>();
-            // TODO: Register IQueryablTransactionalDatabase if the underlying non-transactional database is queryable.
-        }
+        //private static void UseTransactionSubsystem(this IServiceCollection services)
+        //{
+        //    services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+        //    services.AddSingleton<IEntryStateTransformerFactory, EntryStateTransformerFactory>();
+        //    services.AddSingleton<IEntryStateStorageFactory, EntryStateStorageFactory>();
+        //    services.AddSingleton<ITransactionStateTransformer, TransactionStateTransformer>();
+        //    services.AddSingleton<ITransactionStateStorage, TransactionStateStorage>();
+        //    services.AddSingleton<ITransactionManager, TransactionManager>();
+        //    services.AddSingleton<IDatabase, TransactionalDatabase>();
+        //}
 
         public static IStorageBuilder Configure(this IStorageBuilder builder, Action<StorageOptions> configuration)
         {
